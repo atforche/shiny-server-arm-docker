@@ -1,7 +1,7 @@
 ###########################
 # Builder image
 ###########################
-FROM debian:buster-20230208 AS builder
+FROM debian:buster-20230202 AS builder
 
 ENV V_RStudio=R-4.2.2
 ENV V_ShinyServer=v1.5.20.1002
@@ -58,7 +58,7 @@ RUN PYTHON=`which python` && \
 ###########################
 # Production image
 ###########################
-FROM debian:buster-20230208
+FROM debian:buster-20230202
 #Copy artefacts from builder image
 COPY --from=builder /usr/local/bin/R /usr/local/bin/R
 COPY --from=builder /usr/local/lib/R /usr/local/lib/R
@@ -96,6 +96,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 #Preload hello world project
 COPY hello/* /srv/shiny-server/hello/
-RUN R -e "install.packages(c('shiny', 'Cairo'), repos='http://cran.rstudio.com/', clean = TRUE)"
+RUN R -e "install.packages(c('shiny', 'Cairo', 'shinyjs', 'filelock', 'data.table', 'ggplot2', 'lubridate', 'openxlsx', 'plotly', 'scales', 'shinyBS', 'shinytoastr', 'tidyverse'), repos='http://cran.rstudio.com/', clean = TRUE)"
 
 ENTRYPOINT ["/etc/shiny-server/init.sh"]
